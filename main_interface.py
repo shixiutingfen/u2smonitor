@@ -1,6 +1,6 @@
 import  sys
 import  pymysql
-import time
+import datetime
 import re
 from PyQt5 import QtWidgets,QtCore,QtGui
 from PyQt5.QtWidgets import QTableWidgetItem,QMessageBox,QAction,QMenu,QAbstractItemView
@@ -86,6 +86,17 @@ class login(QtWidgets.QDialog,Ui_login):
     def jump(self):
         try:
             self.close()
+            ipcon = self.ip.text()
+            usernamecon = self.username.text()
+            pwdcon = self.pwd.text()
+            util = SqliteUtil()
+            sql = "select * from linux_address where ip='"+ipcon+"' and username='"+usernamecon+"' and pwd='"+pwdcon+"'"
+            results = util.fetchall(sql)
+            if len(results) == 0:#不存在
+                save_sql = '''INSERT INTO linux_address values (?, ?, ?, ?)'''
+                nowtime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                data = [(ipcon,usernamecon,pwdcon, nowtime)]
+                util.save( save_sql, data)
             self.my_staffAdmin = staff_Admin()
             self.my_staffAdmin.show()
         except:
