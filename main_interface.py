@@ -5,7 +5,7 @@ import re
 from PyQt5 import QtWidgets,QtCore,QtGui
 from PyQt5.QtWidgets import QTableWidgetItem,QMessageBox,QAction,QMenu,QAbstractItemView
 from mainWindow import Ui_MainWindow
-from PyQt5.QtCore import Qt,QPoint
+from PyQt5.QtCore import Qt,QPoint,QTimer
 from PyQt5.QtGui import QCursor
 from functools import partial
 from login import  Ui_login
@@ -17,6 +17,7 @@ import sip
 from widgets.rightdock import rightDock
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import Qt
+from thread.dock_thread import DorkThread
 
 #主界面
 class staff_Admin(QtWidgets.QMainWindow,Ui_MainWindow):
@@ -25,6 +26,7 @@ class staff_Admin(QtWidgets.QMainWindow,Ui_MainWindow):
         self.setupUi(self)
         grid = QtWidgets.QGridLayout()
         self.content.setLayout(grid)
+        self.numcount = 0
         self.initDock()
 
         #self.dock
@@ -73,43 +75,53 @@ class staff_Admin(QtWidgets.QMainWindow,Ui_MainWindow):
             except Exception as e:
                 print(e)
     def initDock(self):
+
         #停靠窗口1
-        dock1=QDockWidget(self.tr("系统状态"),self)
-        dock1.setFeatures(QDockWidget.DockWidgetMovable)
-        dock1.setAllowedAreas(Qt.LeftDockWidgetArea|Qt.RightDockWidgetArea)
+        self.dock1=QDockWidget(self.tr("系统状态"),self)
+        self.dock1.setFeatures(QDockWidget.DockWidgetMovable)
+        self.dock1.setAllowedAreas(Qt.LeftDockWidgetArea|Qt.RightDockWidgetArea)
 
-        tabWidget = QtWidgets.QTabWidget()
-        tabWidget.setGeometry(QtCore.QRect(10, 0, 561, 161))
-        tabWidget.setObjectName("tabWidget")
-        tab = QtWidgets.QWidget()
-        tab.setObjectName("tab")
-        textBrowser = QtWidgets.QTextBrowser(tab)
-        textBrowser.setGeometry(QtCore.QRect(0, 0, 561, 141))
-        textBrowser.setObjectName("textBrowser")
-        tabWidget.addTab(tab, "内存")
-        tab_2 = QtWidgets.QWidget()
-        tab_2.setObjectName("tab_2")
-        textBrowser_2 = QtWidgets.QTextBrowser(tab_2)
-        textBrowser_2.setGeometry(QtCore.QRect(0, 0, 561, 141))
-        textBrowser_2.setObjectName("textBrowser_2")
-        tabWidget.addTab(tab_2, "硬盘")
-        tab_3 = QtWidgets.QWidget()
-        tab_3.setObjectName("tab_3")
-        textBrowser_3 = QtWidgets.QTextBrowser(tab_3)
-        textBrowser_3.setGeometry(QtCore.QRect(0, 0, 561, 141))
-        textBrowser_3.setObjectName("textBrowser_3")
-        tabWidget.addTab(tab_3, "CPU")
-        tab_4 = QtWidgets.QWidget()
-        tab_4.setObjectName("tab_4")
-        textBrowser_4 = QtWidgets.QTextBrowser(tab_4)
-        textBrowser_4.setGeometry(QtCore.QRect(0, 0, 561, 141))
-        textBrowser_4.setObjectName("textBrowser_4")
-        tabWidget.addTab(tab_4, "未启动服务")
+        self.tabWidget = QtWidgets.QTabWidget()
+        self.tabWidget.setGeometry(QtCore.QRect(10, 0, 561, 161))
+        self.tabWidget.setObjectName("tabWidget")
+        self.tab = QtWidgets.QWidget()
+        self.tab.setObjectName("tab")
+        self.textBrowser = QtWidgets.QTextBrowser(self.tab)
+        self.textBrowser.setGeometry(QtCore.QRect(0, 0, 561, 141))
+        self.textBrowser.setObjectName("textBrowser")
+        self.tabWidget.addTab(self.tab, "内存")
+        self.tab_2 = QtWidgets.QWidget()
+        self.tab_2.setObjectName("tab_2")
+        self.textBrowser_2 = QtWidgets.QTextBrowser(self.tab_2)
+        self.textBrowser_2.setGeometry(QtCore.QRect(0, 0, 561, 141))
+        self.textBrowser_2.setObjectName("textBrowser_2")
+        self.tabWidget.addTab(self.tab_2, "硬盘")
+        self.tab_3 = QtWidgets.QWidget()
+        self.tab_3.setObjectName("tab_3")
+        self.textBrowser_3 = QtWidgets.QTextBrowser(self.tab_3)
+        self.textBrowser_3.setGeometry(QtCore.QRect(0, 0, 561, 141))
+        self.textBrowser_3.setObjectName("textBrowser_3")
+        self.tabWidget.addTab(self.tab_3, "CPU")
+        self.tab_4 = QtWidgets.QWidget()
+        self.tab_4.setObjectName("tab_4")
+        self.textBrowser_4 = QtWidgets.QTextBrowser(self.tab_4)
+        self.textBrowser_4.setGeometry(QtCore.QRect(0, 0, 561, 141))
+        self.textBrowser_4.setObjectName("textBrowser_4")
+        self.tabWidget.addTab(self.tab_4, "未启动服务")
 
-        dock1.setFixedWidth(250)
+        self.dock1.setFixedWidth(250)
         #te2=QTextEdit(self.tr("窗口2,可在Main Window的左部和右部停靠，不可浮动，不可关闭"))
-        dock1.setWidget(tabWidget)
-        self.addDockWidget(Qt.RightDockWidgetArea,dock1)
+        self.dock1.setWidget(self.tabWidget)
+        self.addDockWidget(Qt.RightDockWidgetArea,self.dock1)
+
+        self.timer = QTimer(self) #初始化一个定时器
+        self.timer.timeout.connect(self.oprate) #计时结束调用operate()方法
+        self.timer.start(5000) #设置计时间隔并启动
+    def oprate(self):
+        self.numcount += 1
+        self.textBrowser.clear()
+        self.textBrowser.append(str(self.numcount))
+
 #登陆
 class login(QtWidgets.QDialog,Ui_login):
     def __init__(self):
