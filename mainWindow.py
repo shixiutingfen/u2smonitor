@@ -93,7 +93,7 @@ class Ui_MainWindow(object):
         self.treeWidget.topLevelItem(0).setText(0, _translate("MainWindow", "问题管理"))
         self.treeWidget.topLevelItem(0).child(0).setText(0, _translate("MainWindow", "显卡信息"))
         self.treeWidget.topLevelItem(0).child(1).setText(0, _translate("MainWindow", "日志管理"))
-        self.treeWidget.topLevelItem(0).child(2).setText(0, _translate("MainWindow", "未完成任务"))
+        self.treeWidget.topLevelItem(0).child(2).setText(0, _translate("MainWindow", "最近任务"))
 
         self.treeWidget.setSortingEnabled(__sortingEnabled)
         self.treeWidget.expandAll()

@@ -61,7 +61,7 @@ class staff_Admin(QtWidgets.QMainWindow,Ui_MainWindow):
             except Exception as e:
                 print(e)
 
-        elif txt =='未完成任务':
+        elif txt =='最近任务':
             self.label1.hide()
             self.label2.hide()
             try:

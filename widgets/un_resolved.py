@@ -7,6 +7,7 @@ from PyQt5.QtWidgets import QTableWidgetItem,QHeaderView
 from PyQt5.QtCore import Qt,QPoint
 from PyQt5.QtGui import QCursor
 from functools import partial
+import requests,json
 #删除员工信息
 class un_resolved(QtWidgets.QWidget,Ui_Form):
     def __init__(self):
@@ -60,8 +61,6 @@ class un_resolved(QtWidgets.QWidget,Ui_Form):
         row = index.row()
         taskid = self.tableWidget.item(row, 0).text()  # 获取部门编号
         serinum = self.tableWidget.item(row, 1).text()
-        print(taskid)
-        print(serinum)
         for singer_obj in self.parent().children():
             if isinstance(singer_obj, QtWidgets.QGridLayout) == True:
                 grid = singer_obj
@@ -70,17 +69,21 @@ class un_resolved(QtWidgets.QWidget,Ui_Form):
             if (isinstance(singer_obj, QtWidgets.QLabel) == False and isinstance(singer_obj,QtWidgets.QGridLayout) == False):
                 singer_obj.hide()
 
-        content.taskDetail = TaskDetail()
+        content.taskDetail = TaskDetail(taskid,serinum)
 
         grid.addWidget(content.taskDetail)
-        content.taskDetail.label.setText(serinum)
+        content.taskDetail.tuzhenvalue.setText(taskid)
+        content.taskDetail.jiegouhuavalue.setText(serinum)
 
 #删除员工信息
 class TaskDetail(QtWidgets.QWidget,Ui_FormTaskDetail):
-    def __init__(self):
+    def __init__(self,taskid,serinum):
         super(TaskDetail, self).__init__()
+        self.taskid = taskid
+        self.serinum = serinum
         self.setupUi(self)
         self.pushButton.clicked.connect(self.goback)
+        self.initTaskDetailData()
     #返回按钮
     def goback(self):
         for singer_obj in self.parent().children():
@@ -95,3 +98,15 @@ class TaskDetail(QtWidgets.QWidget,Ui_FormTaskDetail):
                 singer_obj.deleteLater()
         self.un_resolved_page = un_resolved()
         grid.addWidget(self.un_resolved_page)
+
+    def initTaskDetailData(self):
+        dbutil = DbUtil()
+        tuzhenparams = dbutil.get_tuzhen_param(self.taskid)
+        u2sparams = dbutil.get_u2s_param(self.serinum)
+        #print(self.serinum)
+        url = "http://43.4.112.106:20280/rest/taskManage/getAllResultList"
+        data = {"serialnumber":str(self.serinum),"startTime":"2018-11-01 00:19:24","endTime":"2018-11-16 16:19:25","pageNo":"1","pageSize":"15"}
+        r = requests.post(url, data=json.dumps(data))
+        self.tuzhentextBrowser.setText(tuzhenparams)
+        self.jiegouhuatextBrowser.setText(u2sparams)
+        self.kuaizhaotextBrowser.setText(r.text)

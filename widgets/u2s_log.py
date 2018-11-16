@@ -78,8 +78,8 @@ class u2s_log(QtWidgets.QWidget,Ui_Form):
         self.treeWidget_2.doubleClicked.connect(self.onClicked2)
 
     def sftp_upload(ip,filepath,local_path):
-        print(filepath)
-        print(local_path)
+        #print(filepath)
+        #print(local_path)
         client = paramiko.Transport(("43.4.112.155",22))
         client.connect(username="admin123",password="admin123")
         sftp = paramiko.SFTPClient.from_transport(client)

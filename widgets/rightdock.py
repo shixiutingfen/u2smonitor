@@ -7,7 +7,7 @@ class rightDock(QtWidgets.QWidget):
     def __init__(self):
         super(rightDock, self).__init__()
         content = self.parent()
-        print(content)
+        #print(content)
         #停靠窗口1
         self.dock1=QDockWidget(self.tr("系统状态"),self)
         self.dock1.setFeatures(QDockWidget.DockWidgetMovable)

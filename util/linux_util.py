@@ -126,7 +126,7 @@ class LinuxUtil():
             stdin6, stdout6, stderr6 = s.exec_command ('ls -lih /u2s/slave/objext/objext/OESObjectRabbitMQHandler.so')
             VideoObjectExtractionService = str(stdout.read())
             libImageRecog_jni = str(stdout2.read())
-            print(libImageRecog_jni)
+            #print(libImageRecog_jni)
             libVideoAnalysisSDK = str(stdout3.read())
             OESObjectHandlerManager = str(stdout4.read())
             OESObjectKafkaHandler = str(stdout5.read())
@@ -168,7 +168,7 @@ if __name__ == "__main__":
     #util.get_unstart_service()
     #result = util.get_unstart_service()
     result = util.get_versioninf()
-    print(result)
+    #print(result)
     #util.sshclient_logcmd()
     #util.sftp_upload("43.4.112.155",22,"admin123","admin123")
 
