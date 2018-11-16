@@ -6,67 +6,58 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>617</width>
+    <width>808</width>
     <height>554</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="QWidget" name="verticalLayoutWidget">
+  <widget class="QTableWidget" name="tableWidget">
    <property name="geometry">
     <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>581</width>
-     <height>51</height>
+     <x>1</x>
+     <y>51</y>
+     <width>761</width>
+     <height>371</height>
     </rect>
    </property>
-   <layout class="QVBoxLayout" name="verticalLayout_3">
-    <item>
-     <widget class="QLabel" name="unresolvetitle">
-      <property name="text">
-       <string>未完成任务</string>
-      </property>
-     </widget>
-    </item>
-   </layout>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <column>
+    <property name="text">
+     <string>图侦任务id</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>结构化serinumber</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>任务创建时间</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>操作</string>
+    </property>
+   </column>
   </widget>
-  <widget class="QWidget" name="verticalLayoutWidget_2">
+  <widget class="QLabel" name="unresolvetitle">
    <property name="geometry">
     <rect>
      <x>0</x>
-     <y>50</y>
-     <width>581</width>
-     <height>311</height>
+     <y>10</y>
+     <width>48</width>
+     <height>16</height>
     </rect>
    </property>
-   <layout class="QVBoxLayout" name="verticalLayout_4">
-    <item>
-     <widget class="QTableWidget" name="tableWidget">
-      <column>
-       <property name="text">
-        <string>serinumber</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>创建时间</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>参数</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>操作</string>
-       </property>
-      </column>
-     </widget>
-    </item>
-   </layout>
+   <property name="text">
+    <string>最近任务</string>
+   </property>
   </widget>
  </widget>
  <resources/>

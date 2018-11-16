@@ -53,25 +53,51 @@ class u2s_log(QtWidgets.QWidget,Ui_Form):
                                  child3.setText(0,line4)
                                  child3.setText(1,"/u2s/slave/objext/objext/log/"+line.strip()+"/"+line2.strip()+"/"+line3.strip()+"/"+line4.strip())
 
-        s.close()
+
         #以下两句是主窗口的设置
         #self.setCentralWidget(self.tree)
         self.treeWidget.doubleClicked.connect(self.onClicked)
 
+        self.myControls['treeWidget_2']=self.treeWidget_2
+        self.treeWidget_2.setColumnCount(2) # 说明是树形的表，
+        self.treeWidget_2.setColumnWidth(0,400)
+        self.treeWidget_2.setHeaderLabels(['文件名','全路径']) # 是表，则有表头
+        stdin5, stdout5, stderr5 = s.exec_command ("cd /u2s/manager/apache-tomcat-8.5.23/logs;ls")
+        stdin5.write("Y")  # Generally speaking, the first connection, need a simple interaction.
+         # 根节点的父是 QTreeWidget对象
+        root2= QTreeWidgetItem(self.treeWidget_2)
+        root2.setText(0,"manager")
+        self.treeWidget_2.addTopLevelItem(root2)
+        for line5 in stdout5:
+            child21 = QTreeWidgetItem(root2) #指出父结点
+            child21.setText(0,line5)
+            child21.setText(1,'/u2s/manager/apache-tomcat-8.5.23/logs/'+line5)
+        s.close()
+        #以下两句是主窗口的设置
+        #self.setCentralWidget(self.tree)
+        self.treeWidget_2.doubleClicked.connect(self.onClicked2)
+
     def sftp_upload(ip,filepath,local_path):
+        print(filepath)
+        print(local_path)
         client = paramiko.Transport(("43.4.112.155",22))
         client.connect(username="admin123",password="admin123")
         sftp = paramiko.SFTPClient.from_transport(client)
         # 使用paramiko下载文件到本机
         sftp.get(filepath, local_path)
         client.close()
-    def onClicked(self,qmodeLindex):
+    def onClicked(self):
         fileDirectory = QFileDialog.getExistingDirectory()
         item=self.treeWidget.currentItem()
         localpath = fileDirectory+"/"+item.text(0)
         self.sftp_upload(item.text(1),localpath.strip())
         print('Key=%s,value=%s'%(item.text(0),item.text(1)))
-
+    def onClicked2(self):
+        fileDirectory = QFileDialog.getExistingDirectory()
+        item2=self.treeWidget_2.currentItem()
+        localpath = fileDirectory+"/"+item2.text(0)
+        self.sftp_upload(item2.text(1),localpath.strip())
+        print('Key=%s,value=%s'%(item2.text(0),item2.text(1)))
 
 
         #以下两句是主窗口的设置

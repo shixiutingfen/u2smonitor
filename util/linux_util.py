@@ -1,9 +1,16 @@
 import paramiko,time
+from sqllite_util import SqliteUtil
 class LinuxUtil():
     def __init__(self):
-        self.hostname = '43.4.112.155'
-        self.username = 'admin123'
-        self.pwd = 'admin123'
+        util = SqliteUtil()
+        results = util.fetchall("select * from linux_address ORDER BY createtime DESC ")
+        self.hostname = results[0][0]
+        print(self.hostname)
+        self.username = results[0][1]
+        self.pwd = results[0][2]
+        # self.hostname = '43.4.112.155'
+        # self.username = 'admin123'
+        # self.pwd = 'admin123'
 
     def sshclient_execmd(self, execmd):
         paramiko.util.log_to_file("paramiko.log")
@@ -83,13 +90,60 @@ class LinuxUtil():
             print(e)
             result = "连接超时"
         return result
+    def get_unstart_service(self):
+        sqlliteutil = SqliteUtil()
+        paramiko.util.log_to_file("paramiko.log")
+        s = paramiko.SSHClient()
+        s.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        resultstr = ''
+        try:
+            s.connect(hostname=self.hostname, port=22, username=self.username, password=self.pwd, timeout=2)
+            results = sqlliteutil.fetchall("select * from service_names ")
+            for result in results:
+                cmd = 'service '+result[2]+' status'
+                stdin, stdout, stderr = s.exec_command (cmd)
+                stdin.write("Y")  # Generally speaking, the first connection, need a simple interaction
+                outstr = str(stdout.read())
+                if outstr.find('inactive')>0 or  outstr.find('failed')>0:
+                    resultstr+=result[1]+'\n\n'
 
-    def sftp_upload(ip,port,user,pwd):
+        except Exception as e:
+            print(e)
+            resultstr = "连接超时"
+        s.close()
+        return resultstr
+    def get_versioninf(self):
+        s = paramiko.SSHClient()
+        s.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        resultstr = ''
+        try:
+            s.connect(hostname=self.hostname, port=22, username=self.username, password=self.pwd, timeout=2)
+            stdin, stdout, stderr = s.exec_command ('ls -lih /u2s/slave/objext/objext/VideoObjectExtractionService')
+            stdin2, stdout2, stderr2 = s.exec_command ('ls -lih /u2s/slave/objext/objext/libImageRecog_jni.so')
+            stdin3, stdout3, stderr3 = s.exec_command ('ls -lih /u2s/slave/objext/objext/libVideoAnalysisSDK.so')
+            stdin4, stdout4, stderr4 = s.exec_command ('ls -lih /u2s/slave/objext/objext/OESObjectHandlerManager.so')
+            stdin5, stdout5, stderr5 = s.exec_command ('ls -lih /u2s/slave/objext/objext/OESObjectKafkaHandler.so')
+            stdin6, stdout6, stderr6 = s.exec_command ('ls -lih /u2s/slave/objext/objext/OESObjectRabbitMQHandler.so')
+            VideoObjectExtractionService = str(stdout.read())
+            libImageRecog_jni = str(stdout2.read())
+            print(libImageRecog_jni)
+            libVideoAnalysisSDK = str(stdout3.read())
+            OESObjectHandlerManager = str(stdout4.read())
+            OESObjectKafkaHandler = str(stdout5.read())
+            OESObjectRabbitMQHandler = str(stdout6.read())
+            resultstr+=VideoObjectExtractionService.split('->')[1].strip()+"\n\n"+libImageRecog_jni.split('->')[1]+'\n\n'+libVideoAnalysisSDK.split('->')[1]+'\n\n'+OESObjectHandlerManager.split('->')[1]\
+                       +'\n\n'+OESObjectKafkaHandler.split('->')[1]+'\n\n'+OESObjectRabbitMQHandler.split('->')[1]
+            s.close()
+        except Exception as e:
+            print(e)
+            resultstr = "连接超时"
+        return resultstr
+    def sftp_upload(self,ip,port,user,pwd):
         client = paramiko.Transport((ip,port))
         client.connect(username=user,password=pwd)
         sftp = paramiko.SFTPClient.from_transport(client)
-        remote_path = "/u2s/slave/objext/objext/log/vasdk/2018-10-29/11.09.41_201810291027150104303122/VASDK-analysis.log"
-        local_path = "D:/VASDK-analysis.log"
+        remote_path = "/u2s/manager/apache-tomcat-8.5.23/logs/u2s.log"
+        local_path = "D:/u2s.log"
         # 使用paramiko下载文件到本机
         sftp.get(remote_path, local_path)
         client.close()
@@ -107,12 +161,16 @@ class LinuxUtil():
 if __name__ == "__main__":
     util = LinuxUtil()
     #result = util.get_cpu()
-   # print(result)
-    #util.sshclient_execmd('df -m /') ##硬盘使用情况
-    result = util.get_cpu() ##硬盘使用情况
+    #print(result)
+    #result = util.sshclient_execmd('ls -lih /u2s/slave/objext/objext/VideoObjectExtractionService') ##硬盘使用情况
+    #result = util.get_cpu() ##硬盘使用情况
+    #print(result)
+    #util.get_unstart_service()
+    #result = util.get_unstart_service()
+    result = util.get_versioninf()
     print(result)
     #util.sshclient_logcmd()
-    #sftp_upload("43.4.112.155",22,"admin123","admin123")
+    #util.sftp_upload("43.4.112.155",22,"admin123","admin123")
 
     # s = paramiko.SSHClient()
     # s.set_missing_host_key_policy(paramiko.AutoAddPolicy())

@@ -7,6 +7,7 @@ from PyQt5.QtCore import QTimer
 from login import  Ui_login
 from widgets.u2s_log import u2s_log
 from widgets.resource_manage import resource_manage
+from widgets.nvidia import nvidia
 from widgets.un_resolved import un_resolved
 from sqllite_util import SqliteUtil
 from PyQt5.QtWidgets import *
@@ -42,12 +43,12 @@ class staff_Admin(QtWidgets.QMainWindow,Ui_MainWindow):
             self.label1.hide()
             self.label2.hide()
 
-        if txt == '资源管理':
+        if txt == '显卡信息':
             self.label1.hide()
             self.label2.hide()
             try:
-                self.resourceManage = resource_manage()
-                grid.addWidget(self.resourceManage)
+                self.nvidiaInfo = nvidia()
+                grid.addWidget(self.nvidiaInfo)
             except Exception as e:
                 print(e)
 
@@ -117,16 +118,16 @@ class staff_Admin(QtWidgets.QMainWindow,Ui_MainWindow):
         self.work.trigger.connect(self.oprate) # 多线程的信号触发连接到UpText
 
          #停靠窗口1
-        self.dock2=QDockWidget(self.tr("服务停启"),self)
+        self.dock2=QDockWidget(self.tr("版本信息"),self)
         self.dock2.setFeatures(QDockWidget.DockWidgetClosable)
         self.dock2.setAllowedAreas(Qt.LeftDockWidgetArea|Qt.RightDockWidgetArea)
         self.dock2.setFixedWidth(250)
-        self.listWidget = QListWidget()
-        self.listWidget.addItem("item1")
-        self.listWidget.addItem("item2")
-        self.listWidget.addItem("item3")
-        self.dock2.setWidget(self.listWidget)
+        self.textBrowser_5 = QtWidgets.QTextBrowser(self.dock2)
+        self.textBrowser_5.setGeometry(QtCore.QRect(0, 0, 661, 341))
+        self.textBrowser_5.setObjectName("textBrowser_5")
+        self.dock2.setWidget(self.textBrowser_5)
         self.addDockWidget(Qt.RightDockWidgetArea,self.dock2)
+        self.nvidiaInf()
     def oprate_start(self):
         self.work.start()
     def oprate(self):
@@ -135,12 +136,20 @@ class staff_Admin(QtWidgets.QMainWindow,Ui_MainWindow):
         freem = util.get_free() ##内存使用情况
         dfm = util.get_hard() ##硬盘使用情况
         cpum = util.get_cpu()
+        unstartservice = util.get_unstart_service()
         self.textBrowser.clear()
         self.textBrowser.append(str(freem))
         self.textBrowser_2.clear()
         self.textBrowser_2.append(dfm)
         self.textBrowser_3.clear()
         self.textBrowser_3.append(cpum)
+        self.textBrowser_4.clear()
+        self.textBrowser_4.append(unstartservice)
+    def nvidiaInf(self):
+        util = LinuxUtil()
+        versionInf = util.get_versioninf()
+        self.textBrowser_5.clear()
+        self.textBrowser_5.append(versionInf)
 
 #登陆
 class login(QtWidgets.QDialog,Ui_login):

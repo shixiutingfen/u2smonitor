@@ -21,13 +21,13 @@ class Ui_MainWindow(object):
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.splitter = QtWidgets.QSplitter(self.centralwidget)
-        self.splitter.setGeometry(QtCore.QRect(0, 0, 1100, 571))
-        self.splitter.setMaximumSize(QtCore.QSize(16777215, 571))
+        self.splitter.setGeometry(QtCore.QRect(0, 0, 1100, 871))
+        self.splitter.setMaximumSize(QtCore.QSize(16777215, 871))
         self.splitter.setOrientation(QtCore.Qt.Horizontal)
         self.splitter.setObjectName("splitter")
         self.treeWidget = QtWidgets.QTreeWidget(self.splitter)
         self.treeWidget.setMinimumSize(QtCore.QSize(178, 0))
-        self.treeWidget.setMaximumSize(QtCore.QSize(178, 571))
+        self.treeWidget.setMaximumSize(QtCore.QSize(178, 871))
         self.treeWidget.setStyleSheet("background-color:#eeeeee;\n"
 "border:outset;\n"
 "color:#215b63;")
@@ -86,16 +86,17 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "结构化监测系统"))
-        self.treeWidget.headerItem().setText(0, _translate("MainWindow", "结构化监测系统"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "结构化运维系统"))
+        self.treeWidget.headerItem().setText(0, _translate("MainWindow", "结构化运维系统"))
         __sortingEnabled = self.treeWidget.isSortingEnabled()
         self.treeWidget.setSortingEnabled(False)
         self.treeWidget.topLevelItem(0).setText(0, _translate("MainWindow", "问题管理"))
-        self.treeWidget.topLevelItem(0).child(0).setText(0, _translate("MainWindow", "资源管理"))
+        self.treeWidget.topLevelItem(0).child(0).setText(0, _translate("MainWindow", "显卡信息"))
         self.treeWidget.topLevelItem(0).child(1).setText(0, _translate("MainWindow", "日志管理"))
         self.treeWidget.topLevelItem(0).child(2).setText(0, _translate("MainWindow", "未完成任务"))
 
         self.treeWidget.setSortingEnabled(__sortingEnabled)
-        self.label1.setText(_translate("MainWindow", "欢迎结构化监测系统系统"))
+        self.treeWidget.expandAll()
+        self.label1.setText(_translate("MainWindow", "欢迎结构化运维系统"))
 
 import img_rc
